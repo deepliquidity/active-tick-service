@@ -29,12 +29,6 @@ void Request::inputRawData(const char *ptr_,uint16_t size_)
 	params["type"] = msg.getSubscriptionType();
 	
 	handle(params);
-        /*std::cout << msg.getSize() << std::endl;
-        std::cout << msg.getMessageType() << std::endl;
-        std::cout << msg.getSubscriptionType() << std::endl;
-        std::cout << msg.getCommand() << " " << msg.getCommand().length() << std::endl;
-        std::cout << msg.getSymbol() << " " << msg.getSymbol().length() << std::endl;
-        std::cout << msg.getExchange() << std::endl;*/
 }
 
 void Request::handle(std::map<std::string,std::string> params)
@@ -60,6 +54,7 @@ void Request::handle(std::map<std::string,std::string> params)
 		std::string s = params["symbol"];
 		std::vector<ATSYMBOL> symbols = Util::StringToSymbols(s);
 
+		printf("SUBS %s\n",type.data());
 		ATStreamRequestType requestType = (type == "S" ? StreamRequestSubscribe : StreamRequestUnsubscribe);
 		uint64_t request = _streamer->SendATQuoteStreamRequest(symbols.data(), (uint16_t)symbols.size(), requestType, DEFAULT_REQUEST_TIMEOUT);
 

@@ -4,6 +4,7 @@
 #include <string>
 #include <stdio.h>
 #include <messages/response/QuoteMessage.H>
+#include <ActiveTickServerAPI/ATQuoteStreamResponseParser.h>
 
 using namespace std;
 
@@ -48,6 +49,7 @@ void Streamer::OnATStreamQuoteUpdate(LPATQUOTESTREAM_QUOTE_UPDATE pUpdate)
 	char length[2];
 	std::string symbolValue = Util::ConvertString(pUpdate->symbol.symbol, _countof(pUpdate->symbol.symbol));
 
+	printf("SYM %s %d\n",symbolValue.data(),symbolValue.length());
 	quoteMsg.setHour(pUpdate->quoteDateTime.hour);
 	quoteMsg.setMinute(pUpdate->quoteDateTime.minute);
 	quoteMsg.setSecond(pUpdate->quoteDateTime.second);
@@ -55,13 +57,13 @@ void Streamer::OnATStreamQuoteUpdate(LPATQUOTESTREAM_QUOTE_UPDATE pUpdate)
 	quoteMsg.setCondition(pUpdate->condition);
 	quoteMsg.setBidExchange(pUpdate->bidExchange);
 	quoteMsg.setAskExchange(pUpdate->askExchange);
-	/*quoteMsg.setBidPrice(pUpdate->bidPrice.price);
+	quoteMsg.setBidPrice(pUpdate->bidPrice.price);
 	quoteMsg.setBidPrecision(pUpdate->bidPrice.precision);
 	quoteMsg.setAskPrice(pUpdate->askPrice.price);
 	quoteMsg.setAskPrecision(pUpdate->askPrice.precision);
 	quoteMsg.setBidSize(pUpdate->bidSize);
 	quoteMsg.setAskSize(pUpdate->askSize);
-	quoteMsg.setSymbol(symbolValue);*/
+	quoteMsg.setSymbol(symbolValue);
 	quoteMsg.serialize(ptr,size);
 
 	printf("Len %d\n",size);
@@ -96,3 +98,45 @@ void Streamer::OnATMarketMoversStreamResponse(uint64_t origRequest, ATStreamResp
         }
         printf("RECV (%llu): Market movers stream response [%s]\n--------------------------------------------------------------\n", (uint64_t)origRequest, strResponseType.c_str());
 }
+
+void Streamer::OnATQuoteStreamResponse(uint64_t origRequest, ATStreamResponseType responseType, LPATQUOTESTREAM_RESPONSE pResponse, uint32_t responseCount)
+{
+	string strResponseType;
+	switch(responseType)
+	{
+		case StreamResponseSuccess: strResponseType = "StreamResponseSuccess"; break;
+		case StreamResponseInvalidRequest: strResponseType = "StreamResponseInvalidRequest"; break;
+		case StreamResponseDenied: strResponseType = "StreamResponseDenied"; break;
+		default: break;
+	}
+
+	printf("RECV (%llu): Quote stream response [%s]\n--------------------------------------------------------------\n", (uint64_t)origRequest, strResponseType.c_str());
+
+	if(responseType == StreamResponseSuccess)
+	{
+		ATQuoteStreamResponseParser parser(pResponse);
+		parser.MoveToBeginning();
+
+		if(parser.MoveToFirstDataItem() == true)
+		{
+			while(true)
+			{
+				string symbolStatus;
+				switch(parser.GetSymbolStatus())
+				{
+					case SymbolStatusSuccess: symbolStatus = "SymbolStatusSuccess"; break;
+					case SymbolStatusInvalid: symbolStatus = "SymbolStatusInvalid"; break;
+					case SymbolStatusUnavailable: symbolStatus = "SymbolStatusUnavailable"; break;
+					case SymbolStatusNoPermission: symbolStatus = "SymbolStatusNoPermission"; break;
+					default: break;
+				}
+
+				printf("\tsymbol:%s symbolStatus:%s\n", Util::ConvertString(parser.GetSymbol()->symbol, _countof(parser.GetSymbol()->symbol)).c_str(), symbolStatus.c_str());
+
+				if(parser.MoveToNextDataItem() == false)
+					break;
+			}
+		}
+	}
+}
+

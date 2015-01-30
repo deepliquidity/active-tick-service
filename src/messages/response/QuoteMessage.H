@@ -75,9 +75,9 @@ class QuoteMessage
                 MemPtr<4>  _bidSize;
 		MemPtr<4>  _askSize;
 
-		MemPtr<10> _symbol;
+		MemPtr<40> _symbol;
 
-		char _buffer[31+sizeof(double)+sizeof(double)];
+		char _buffer[61+sizeof(double)+sizeof(double)];
 		int _size;
 };
 

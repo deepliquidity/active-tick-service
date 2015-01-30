@@ -24,6 +24,8 @@ class Streamer : public ActiveTickStreamListener, public ActiveTickServerRequest
 		//virtual void            OnATQuoteDbStreamer(uint64_t origRequest, ATQuoteDbStreamerType responseType, LPATQUOTEDB_RESPONSE pStreamer, uint32_t responseCount);
 
 		virtual void              OnATMarketMoversStreamResponse(uint64_t origRequest, ATStreamResponseType responseType, LPATMARKET_MOVERS_STREAM_RESPONSE pResponse);
+
+		virtual void 		  OnATQuoteStreamResponse(uint64_t origRequest, ATStreamResponseType responseType, LPATQUOTESTREAM_RESPONSE pResponse, uint32_t responseCount);
 		//virtual void            OnATQuoteStreamStreamer(uint64_t origRequest, ATStreamStreamerType responseType, LPATQUOTESTREAM_RESPONSE pStreamer, uint32_t responseCount);
 
 		//virtual void            OnATSectorListStreamer(uint64_t origRequest, LPATSECTORLIST_RECORD pRecords, uint32_t recordsCount);

@@ -1,5 +1,6 @@
 #include "QuoteMessage.H"
 #include <cstring>
+#include <cstdio>
 
 QuoteMessage::QuoteMessage():_hour(_buffer),
 			     _minute(_buffer + 2),
@@ -16,8 +17,8 @@ QuoteMessage::QuoteMessage():_hour(_buffer),
 			     _askSize(_buffer + 11 + sizeof(double) + 1 + sizeof(double) + 1 + 4),
 			     _symbol(_buffer + 11 + sizeof(double) + 1 + sizeof(double) + 1 + 4 + 4)
 {
-	memset(_buffer,'\0',31+sizeof(double)+sizeof(double));
-	_size = 31+sizeof(double)+sizeof(double);
+	memset(_buffer,'\0',61+sizeof(double)+sizeof(double));
+	_size = 61+sizeof(double)+sizeof(double);
 }
 
 int QuoteMessage::getSize()
@@ -163,6 +164,7 @@ void QuoteMessage::setAskSize(uint32_t size)
 
 void QuoteMessage::setSymbol(std::string symbol_)
 {
+	printf("SSSSS %s %d\n",symbol_.data(),symbol_.length());
 	_symbol.setValue(const_cast<char*>(symbol_.data()),symbol_.length());
 }
 

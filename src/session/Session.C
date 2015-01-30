@@ -32,8 +32,6 @@ bool APISession::Init(const ATGUID& apiUserid, const std::string& serverIpAddres
 
 	if(rc == true)
 		rc = ATInitSession(m_hSession, serverIpAddress.c_str(), serverIpAddress.c_str(), serverPort, ATSessionStatusChangeCallback, true);
-	return false;
-
 	return rc;
 }
 
@@ -95,7 +93,7 @@ void APISession::ATServerTimeUpdateCallback(LPATTIME pServerTime)
 
 void APISession::ATRequestTimeoutCallback(uint64_t hOrigRequest)
 {
-	printf("(%I64u): Request timed-out\n", hOrigRequest);
+	printf("(%I64u): Request timed-out %u \n", hOrigRequest,s_pInstance);
 }
 
 void APISession::startLogin()

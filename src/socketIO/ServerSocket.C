@@ -69,7 +69,7 @@ void ActiveTickService::startConnection()
 	int client_port;
 	pthread_t *iter;
 
-	while (1)
+	//while (1)
 	{
 		newsockfd = accept(server_socket, (struct sockaddr *) &cli_addr, (socklen_t*)&clilen);
 		if (newsockfd < 0)
@@ -88,16 +88,17 @@ void ActiveTickService::startConnection()
 
 void ActiveTickService::handleConnection()
 {
-	std::thread serverThread(&ActiveTickService::threadFunction,this,client_socket);
+	threadFunction(client_socket);
+	//std::thread serverThread(&ActiveTickService::threadFunction,this,client_socket);
 
-	serverThread.join();
+	//serverThread.join();
 }
 
 void ActiveTickService::threadFunction(int fd)
 {
 	uint16_t length;
 
-	while(1)
+	//while(1)
 	{
 		char *rawmessage = Util::readRawData(fd,2);
 		if(rawmessage == NULL)
