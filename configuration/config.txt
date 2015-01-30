@@ -1,0 +1,7 @@
+serverip=activetick1.activetick.com
+serverport=443
+key=7b364fae6c4248bb90b672507f89948b
+username=austin
+userpassword=austintexas
+hostname=172.27.147.42
+port=1235
