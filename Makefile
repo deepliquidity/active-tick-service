@@ -3,8 +3,11 @@ INCLUDES+= -I include -I src/util/ -I src -I src/session/ -I src/streamer -I src
 LIBRARIES+= -lActiveTickServerAPI -lpthread
 LIBRARYPATH+= lib/
 
-all: Util Session Request Streamer SocketIO Messages Main
+all: createDir Util Session Request Streamer SocketIO Messages Main
 	$(CC) -o ActiveTickService build/Util.o build/Session.o build/CConfig.o build/Streamer.o build/Request.o build/ServerSocket.o build/requestMessage.o build/quoteMessage.o build/Main.o -L $(LIBRARYPATH) $(LIBRARIES) -Xlinker -rpath -Xlinker $(LIBRARYPATH)
+
+createDir:
+	mkdir -p build
 
 Main:
 	$(CC) -c -o build/Main.o bin/Main.C $(INCLUDES)
@@ -28,4 +31,4 @@ Messages:
 	$(CC) -c -o build/requestMessage.o src/messages/request/Message.C $(INCLUDES)
 	$(CC) -c -o build/quoteMessage.o src/messages/response/QuoteMessage.C $(INCLUDES)
 clean:
-	rm -fr build/* ActiveTickService
+	rm -fr build/* ActiveTickService build
